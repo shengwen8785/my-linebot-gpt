@@ -23,7 +23,7 @@ def callback():
 
 
 @handler.add(MessageEvent, message=TextMessage)  # 處理文字訊息
-def handle_text_massage(event):
+def handle_massage(event):
     # ToDo:將text設為ChatGPT的回覆
     message = TextSendMessage(text=event.message.text)  # event.message.text:使用者傳入訊息
     line_bot_api.reply_message(event.reply_token, message)  # message: 傳送給使用者的訊息
