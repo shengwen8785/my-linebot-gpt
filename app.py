@@ -9,6 +9,9 @@ from linebot.models import FollowEvent, MessageEvent, TextMessage, TextSendMessa
 line_bot_api = LineBotApi(os.environ['CHANNEL_ACCESS_TOKEN'])
 handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 
+# OpenAI configuration
+openai.api_key = os.environ['CHATGPT_API_KEY']
+
 
 @handler.add(MessageEvent, message=TextMessage)  # 處理文字訊息
 def handle_massage(event):
