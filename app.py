@@ -28,9 +28,9 @@ def handle_follow(event):
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": content+user_id},
-            {"role": "user", "content": f"跟顧客{user_id}打招呼"}
+            {"role": "user", "content": f"請先自我介紹，然後打招呼"}
         ],
-        max_tokens=128
+        max_tokens=256
     )
     # ChatGPT的回覆
     message = TextSendMessage(text=response.choices[0].message.content)
