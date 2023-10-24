@@ -22,7 +22,7 @@ def handle_massage(event):
 
 @handler.add(FollowEvent)
 def handle_follow(event):
-    content = open("config/Prompt1(角色設定).txt").readlines()[0]  # 角色Prompt
+    content = open("config/Prompt1(角色設定).txt", "r", encoding="UTF-8").readlines()[0]  # 角色Prompt
     user_id = event.source.user_id
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
