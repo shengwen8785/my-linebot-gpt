@@ -1,13 +1,39 @@
 import os
+import openai
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import FollowEvent, MessageEvent, TextMessage, TextSendMessage
 
-app = Flask(__name__)
-
+# Line Bot configuration
 line_bot_api = LineBotApi(os.environ['CHANNEL_ACCESS_TOKEN'])
 handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
+
+
+@handler.add(MessageEvent, message=TextMessage)  # 處理文字訊息
+def handle_massage(event):
+    # ToDo:將text設為ChatGPT的回覆
+    message = TextSendMessage(text=event.message.text)  # event.message.text:使用者傳入訊息
+    line_bot_api.reply_message(event.reply_token, message)  # message: 傳送給使用者的訊息
+
+
+@handler.add(FollowEvent)
+def handle_follow(event):
+    content = open("config/Prompt1(角色設定).txt").readlines()[0]  # 角色Prompt
+    user_id = event.source.user_id
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": content+user_id}
+        ],
+        max_tokens=128
+    )
+    # ChatGPT的回覆
+    message = TextSendMessage(text=response.choices[0].text)
+    line_bot_api.reply_message(event.reply_token, message)
+
+
+app = Flask(__name__)
 
 
 @app.route('/callback', methods=['POST'])
@@ -20,13 +46,6 @@ def callback():
     except InvalidSignatureError:  # 代表簽名認證無效
         abort(400)
     return 'OK'
-
-
-@handler.add(MessageEvent, message=TextMessage)  # 處理文字訊息
-def handle_massage(event):
-    # ToDo:將text設為ChatGPT的回覆
-    message = TextSendMessage(text=event.message.text)  # event.message.text:使用者傳入訊息
-    line_bot_api.reply_message(event.reply_token, message)  # message: 傳送給使用者的訊息
 
 
 if __name__ == "__main__":
