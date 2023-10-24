@@ -29,7 +29,7 @@ def handle_follow(event):
         max_tokens=128
     )
     # ChatGPT的回覆
-    message = TextSendMessage(text=response.choices[0].text)
+    message = TextSendMessage(text=response.choices[0].message.content)
     line_bot_api.reply_message(event.reply_token, message)
 
 
