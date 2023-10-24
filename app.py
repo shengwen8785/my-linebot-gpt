@@ -27,8 +27,8 @@ def handle_follow(event):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": content+user_id},
-            {"role": "user", "content": f"請先自我介紹，然後打招呼"}
+            # {"role": "system", "content": content+user_id},
+            {"role": "user", "content": content+user_id}
         ],
         max_tokens=256
     )
