@@ -36,6 +36,7 @@ def handle_follow(event):
     # Prompt提示詞:請和使用者打招呼
     prompt = deepcopy(prompt_initial)
     prompt = prompt.append({"role": "user", "content": "請和{username}打招呼，並自我介紹".format(username=username)})
+    print(prompt)
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=prompt,
