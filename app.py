@@ -15,8 +15,8 @@ handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 openai.api_key = os.environ['CHATGPT_API_KEY']
 
 # Global variable
+
 user_list = []
-prompt_initial = json.loads(open("./config/prompt.json", "r", encoding="utf-8").read())  # 角色提示
 
 
 @handler.add(MessageEvent, message=TextMessage)  # 處理文字訊息
@@ -28,6 +28,8 @@ def handle_massage(event):
 
 @handler.add(FollowEvent)
 def handle_follow(event):
+    prompt_initial = json.loads(open("./config/prompt.json", "r", encoding="utf-8").read())  # 角色提示
+
     # 獲取用戶id
     user_id = event.source.user_id
 
