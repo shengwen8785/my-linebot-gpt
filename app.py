@@ -37,14 +37,14 @@ def handle_follow(event):
     prompt = deepcopy(prompt_initial)
     prompt = prompt.append({"role": "user", "content": "請和{username}打招呼，並自我介紹".format(username=username)})
     print(prompt)
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=prompt,
-        max_tokens=256
-    )
-    # ChatGPT的回覆
-    message = TextSendMessage(text=response.choices[0].message.content)
-    line_bot_api.reply_message(event.reply_token, message)
+    # response = openai.ChatCompletion.create(
+    #     model="gpt-3.5-turbo",
+    #     messages=prompt,
+    #     max_tokens=256
+    # )
+    # # ChatGPT的回覆
+    # message = TextSendMessage(text=response.choices[0].message.content)
+    # line_bot_api.reply_message(event.reply_token, message)
 
 
 app = Flask(__name__)
