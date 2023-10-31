@@ -1,5 +1,7 @@
 import os
+import json
 import openai
+from copy import deepcopy
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -12,6 +14,10 @@ handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 # OpenAI configuration
 openai.api_key = os.environ['CHATGPT_API_KEY']
 
+# Global variable
+user_list = []
+prompt_initial = json.loads(open("./config/prompt.json", "r", encoding="utf-8").read())  # 角色提示
+
 
 @handler.add(MessageEvent, message=TextMessage)  # 處理文字訊息
 def handle_massage(event):
@@ -22,14 +28,17 @@ def handle_massage(event):
 
 @handler.add(FollowEvent)
 def handle_follow(event):
-    content = open("config/Prompt1(角色設定).txt", "r", encoding="UTF-8").readlines()[0]  # 角色Prompt
+    # 獲取用戶id
     user_id = event.source.user_id
+
+    # ChatGPT與用戶打招呼
+    username = line_bot_api.get_profile(user_id)["displayName"]  # 從用戶id獲取用戶名稱
+    # Prompt提示詞:請和使用者打招呼
+    prompt = deepcopy(prompt_initial)
+    prompt = prompt.append({"role": "user", "content": "請和{username}打招呼，並自我介紹".format(username=username)})
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=[
-            # {"role": "system", "content": content+user_id},
-            {"role": "user", "content": content+user_id}
-        ],
+        messages=prompt,
         max_tokens=256
     )
     # ChatGPT的回覆
