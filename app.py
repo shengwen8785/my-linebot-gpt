@@ -32,7 +32,7 @@ def handle_follow(event):
     user_id = event.source.user_id
 
     # ChatGPT與用戶打招呼
-    username = line_bot_api.get_profile(user_id)["displayName"]  # 從用戶id獲取用戶名稱
+    username = line_bot_api.get_profile(user_id).display_name  # 從用戶id獲取用戶名稱
     # Prompt提示詞:請和使用者打招呼
     prompt = deepcopy(prompt_initial)
     prompt = prompt.append({"role": "user", "content": "請和{username}打招呼，並自我介紹".format(username=username)})
