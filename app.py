@@ -28,7 +28,7 @@ def handle_massage(event):
 
 @handler.add(FollowEvent)
 def handle_follow(event):
-    prompt_initial = json.loads(open("./config/prompt.json", "r", encoding="utf-8").read())  # 角色提示
+    prompt_initial = json.loads(open("config/prompt.json", "r", encoding="utf-8").read())  # 角色提示
 
     # 獲取用戶id
     user_id = event.source.user_id
