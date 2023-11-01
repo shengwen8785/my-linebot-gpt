@@ -2,10 +2,15 @@ import os
 import json
 import openai
 from copy import deepcopy
+from pathlib import Path
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import FollowEvent, MessageEvent, TextMessage, TextSendMessage
+
+# Set json(prompt) file path and load it
+json_path = str(Path(__file__).parent / "config/prompt.json")
+prompt_initial = json.loads(open(json_path, "r", encoding="utf-8").read())  # 角色提示
 
 # Line Bot configuration
 line_bot_api = LineBotApi(os.environ['CHANNEL_ACCESS_TOKEN'])
@@ -28,8 +33,6 @@ def handle_massage(event):
 
 @handler.add(FollowEvent)
 def handle_follow(event):
-    prompt_initial = json.loads(open("config/prompt.json", "r", encoding="utf-8").read())  # 角色提示
-
     # 獲取用戶id
     user_id = event.source.user_id
 
