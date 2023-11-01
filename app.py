@@ -9,9 +9,10 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import FollowEvent, MessageEvent, TextMessage, TextSendMessage
 
 # Set json(prompt) file path and load it
-json_path = Path(__file__).parent / "config/prompt.json"
-print(str(json_path.absolute()))
-prompt_initial = json.loads(open(str(json_path.absolute()), "r", encoding="utf-8").read())  # 角色提示
+root_path = Path(__file__).resolve().parent
+json_path = root_path / "config" / "prompt.json"
+print(str(json_path))
+prompt_initial = json.loads(open(str(json_path), "r", encoding="utf-8").read())  # 角色提示
 
 # Line Bot configuration
 line_bot_api = LineBotApi(os.environ['CHANNEL_ACCESS_TOKEN'])
