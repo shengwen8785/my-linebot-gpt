@@ -9,7 +9,7 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import FollowEvent, MessageEvent, TextMessage, TextSendMessage
 
 # Set json(prompt) file path and load it
-json_path = str(Path(__file__).parent / "config/prompt.json")
+json_path = str(Path(__file__).parent.parent.absolute() / "config/prompt.json")
 print(json_path)
 prompt_initial = json.loads(open(json_path, "r", encoding="utf-8").read())  # 角色提示
 
