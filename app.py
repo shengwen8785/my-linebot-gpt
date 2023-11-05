@@ -19,7 +19,6 @@ handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 openai.api_key = os.environ['CHATGPT_API_KEY']
 
 # Global variable
-
 user_list = []
 
 
@@ -32,26 +31,23 @@ def handle_massage(event):
 
 @handler.add(FollowEvent)
 def handle_follow(event):
-    print(prompt_initial)
     # 獲取用戶id
     user_id = event.source.user_id
 
     # ChatGPT與用戶打招呼
     username = line_bot_api.get_profile(user_id).display_name  # 從用戶id獲取用戶名稱
-    print(username)
+
     # Prompt提示詞:請和使用者打招呼
     prompt = deepcopy(prompt_initial)
-    print(prompt)
-    prompt = prompt.append({"role": "user", "content": "請和{username}打招呼，並自我介紹".format(username=username)})
-    print(prompt)
-    # response = openai.ChatCompletion.create(
-    #     model="gpt-3.5-turbo",
-    #     messages=prompt,
-    #     max_tokens=256
-    # )
-    # # ChatGPT的回覆
-    # message = TextSendMessage(text=response.choices[0].message.content)
-    # line_bot_api.reply_message(event.reply_token, message)
+    prompt.append({"role": "user", "content": "請和{username}打招呼，並自我介紹".format(username=username)})
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=prompt,
+        max_tokens=256
+    )
+    # ChatGPT的回覆
+    message = TextSendMessage(text=response.choices[0].message.content)
+    line_bot_api.reply_message(event.reply_token, message)
 
 
 app = Flask(__name__)
