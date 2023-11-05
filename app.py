@@ -2,7 +2,6 @@ import os
 import json
 import openai
 from copy import deepcopy
-from pathlib import Path
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -19,13 +18,28 @@ handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 openai.api_key = os.environ['CHATGPT_API_KEY']
 
 # Global variable
-user_list = []
+# user_list = []
 
 
 @handler.add(MessageEvent, message=TextMessage)  # 處理文字訊息
 def handle_massage(event):
-    # ToDo:將text設為ChatGPT的回覆
-    message = TextSendMessage(text=event.message.text)  # event.message.text:使用者傳入訊息
+    # 使用者傳入之訊息
+    user_message = event.message.text
+    prompt = deepcopy(prompt_initial)
+    prompt.append({"role": "user", "content": str(user_message)})
+    if len(prompt) >= 16:
+        prompt = deepcopy(prompt_initial)  # 重置prompt，避免收費過高
+
+    # 透過OpenAI API使用ChatGPT並取得其回覆
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=prompt,
+        max_tokens=256
+    )
+    # ChatGPT的回覆
+    message = TextSendMessage(text=response.choices[0].message.content)
+    prompt.append({"role": "assistant", "content": message})  # 紀錄ChatGPT的回覆
+    # 透過Line Bot SDK回覆訊息
     line_bot_api.reply_message(event.reply_token, message)  # message: 傳送給使用者的訊息
 
 
